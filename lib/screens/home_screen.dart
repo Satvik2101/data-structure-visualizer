@@ -11,18 +11,16 @@ class HomeScreen extends StatelessWidget {
       description:
           'Stack is a linear data structure which follows a First In Last Out (FILO), or Last In First Out (LIFO) order of operations\nInsertion and extraction happens from the same end.',
       routeName: '/',
-      color: const Color(0xFFFAD6D6),
-      imagePath:
-          'https://jonlennartaasenden.files.wordpress.com/2019/05/use-case-graphic_full-stack-provisioning.png',
+      color: Colors.orange[700]!,
+      imagePath: 'assets/images/stack.png',
     ),
     DataStructure(
       title: 'Queue',
       description:
           'Queue is a linear data structure which follows a First In First Out (FIFO).\nA queue is open at both ends, insertion happens at the rear of the queue and extraction happens from the front.',
       routeName: '/',
-      color: const Color(0xFFDBD6FA),
-      imagePath:
-          'https://w7.pngwing.com/pngs/308/289/png-transparent-computer-icons-email-message-queue-email-miscellaneous-angle-rectangle-thumbnail.png',
+      color: Colors.purple,
+      imagePath: 'assets/images/queue.png',
     ),
   ];
   @override
@@ -40,9 +38,6 @@ class HomeScreen extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Image.network(
-                    'https://miro.medium.com/max/1400/0*UVG1F-0kLAEWAT3k',
-                  ),
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.all(15.0),
@@ -55,12 +50,15 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  Image.network(
+                    'https://miro.medium.com/max/1400/0*UVG1F-0kLAEWAT3k',
+                  ),
                 ],
               ),
               Positioned(
                 bottom: 0,
                 child: SizedBox(
-                  height: 250,
+                  height: 200,
                   child: ListView(
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
