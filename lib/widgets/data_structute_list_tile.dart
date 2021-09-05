@@ -1,4 +1,4 @@
-import 'package:ds_visualizer/models/data_structure.dart';
+import '../models/data_structure.dart';
 import 'package:flutter/material.dart';
 
 class DataStructureListTile extends StatelessWidget {

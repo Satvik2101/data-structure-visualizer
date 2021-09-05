@@ -1,14 +1,16 @@
 import 'dart:math';
 
-import 'package:ds_visualizer/screens/array_screen.dart';
-import 'package:ds_visualizer/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'widgets/screen_template.dart';
+import 'screens/home_screen.dart';
 
 void main() {
   runApp(MyApp());
 }
 
+// ignore: use_key_in_widget_constructors
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   MaterialColor generateMaterialColor(Color color) {
@@ -84,9 +86,9 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: HomeScreen(),
+      home: const HomeScreen(),
       routes: {
-        ArrayScreen.routeName: (ctx) => const ArrayScreen(),
+        ScreenTemplate.routeName: (ctx) => const ScreenTemplate(),
       },
     );
   }

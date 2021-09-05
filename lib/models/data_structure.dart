@@ -1,5 +1,6 @@
-import 'package:ds_visualizer/screens/array_screen.dart';
 import 'package:flutter/material.dart';
+
+import '../widgets/screen_template.dart';
 
 class DataStructure {
   final String title;
@@ -34,16 +35,17 @@ final List<DataStructure> dataStructuresList = [
 3. Store elements in a contiguous block of memory
 4. Once declared and initialized, the size of an array cannot be changed
       ''',
-    routeName: ArrayScreen.routeName,
+    routeName: ScreenTemplate.routeName,
   ),
   DataStructure(
     title: 'Vector',
     description:
         'Vectors are the C++ representation of a resizable array, that grows in size if it needs to. Dynamic memory allocation is used for this.',
-    routeName: '/',
+    routeName: ScreenTemplate.routeName,
     colors: [
       Colors.deepOrange[800]!,
       Colors.orange[900]!,
+      Colors.orange[700]!,
     ],
     imagePath: '',
     salientFeatures: '',
@@ -52,8 +54,12 @@ final List<DataStructure> dataStructuresList = [
     title: 'Linked List',
     description:
         'It is a linear data structure whose order is not determined by the placement in memory, which can be non-linear as well. Instead each element contains a pointer to the next element.',
-    routeName: '/',
-    colors: [Colors.green[800]!],
+    routeName: ScreenTemplate.routeName,
+    colors: [
+      Colors.green[800]!,
+      Colors.greenAccent[700]!,
+      Colors.lightGreenAccent[700]!
+    ],
     imagePath:
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwIaAcgdQlGML-EEWFOH296Flik0hHmzI_77V20Um9UmBO2jLhsTWSBWBCEE6qFfs56gM&usqp=CAU',
     salientFeatures: '',
@@ -62,8 +68,12 @@ final List<DataStructure> dataStructuresList = [
     title: 'Stack',
     description:
         'Stack is a linear data structure which follows a First In Last Out (FILO), or Last In First Out (LIFO) order of operations\nInsertion and extraction happens from the same end.',
-    routeName: '/',
-    colors: [Colors.orange[700]!],
+    routeName: ScreenTemplate.routeName,
+    colors: [
+      Colors.red[800]!,
+      Colors.red,
+      Colors.orange[900]!,
+    ],
     salientFeatures: '',
     imagePath: 'assets/images/stack.png',
   ),
@@ -71,8 +81,12 @@ final List<DataStructure> dataStructuresList = [
     title: 'Queue',
     description:
         'Queue is a linear data structure which follows a First In First Out (FIFO).\nA queue is open at both ends, insertion happens at the rear of the queue and extraction happens from the front.',
-    routeName: '/',
-    colors: [Colors.purple],
+    routeName: ScreenTemplate.routeName,
+    colors: [
+      Colors.purple[900]!,
+      Colors.purple[800]!,
+      Colors.purple[700]!,
+    ],
     imagePath: 'assets/images/queue.png',
     salientFeatures: '',
   ),

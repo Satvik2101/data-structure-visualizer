@@ -1,4 +1,3 @@
-import 'package:ds_visualizer/screens/array_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../models/data_structure.dart';
