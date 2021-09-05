@@ -87,7 +87,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const HomeScreen(),
+      home: const ArrayScreen(),
       routes: {
         ArrayScreen.routeName: (context) => const ArrayScreen(),
       },
