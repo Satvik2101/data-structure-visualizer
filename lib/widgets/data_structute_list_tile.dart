@@ -1,33 +1,36 @@
+import 'package:ds_visualizer/models/data_structure.dart';
 import 'package:flutter/material.dart';
 
 class DataStructureListTile extends StatelessWidget {
-  const DataStructureListTile({
+  // ignore: prefer_const_constructors_in_immutables
+  DataStructureListTile(
+    this.index, {
     Key? key,
-    required this.title,
-    required this.description,
-    required this.routeName,
-    required this.color,
-    required this.imagePath,
   }) : super(key: key);
 
-  final String title;
-  final String description;
-  final String routeName;
-  final Color color;
-  final String imagePath;
-
+  final int index;
+  late final String title;
+  late final String description;
+  late final String routeName;
+  late final Color color;
   final double size = 200;
   final double borderRadius = 20;
 
   @override
   Widget build(BuildContext context) {
+    title = dataStructuresList[index].title;
+    description = dataStructuresList[index].description;
+    routeName = dataStructuresList[index].routeName;
+    color = dataStructuresList[index].colors[0];
+
     return Card(
-      // elevation: 10,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(borderRadius),
       ),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          Navigator.of(context).pushNamed(routeName, arguments: index);
+        },
         borderRadius: BorderRadius.circular(borderRadius),
         child: Ink(
           height: size,

@@ -1,28 +1,12 @@
-import 'package:ds_visualizer/widgets/data_structute_list_tile.dart';
+import 'package:ds_visualizer/screens/array_screen.dart';
 import 'package:flutter/material.dart';
 
-import 'package:ds_visualizer/models/data_structure.dart';
+import '../models/data_structure.dart';
+import '../widgets/data_structute_list_tile.dart';
 
 class HomeScreen extends StatelessWidget {
-  HomeScreen({Key? key}) : super(key: key);
-  final List<DataStructure> dataStructuresList = [
-    DataStructure(
-      title: 'Stack',
-      description:
-          'Stack is a linear data structure which follows a First In Last Out (FILO), or Last In First Out (LIFO) order of operations\nInsertion and extraction happens from the same end.',
-      routeName: '/',
-      color: Colors.orange[700]!,
-      imagePath: 'assets/images/stack.png',
-    ),
-    DataStructure(
-      title: 'Queue',
-      description:
-          'Queue is a linear data structure which follows a First In First Out (FIFO).\nA queue is open at both ends, insertion happens at the rear of the queue and extraction happens from the front.',
-      routeName: '/',
-      color: Colors.purple,
-      imagePath: 'assets/images/queue.png',
-    ),
-  ];
+  const HomeScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,12 +25,22 @@ class HomeScreen extends StatelessWidget {
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.all(15.0),
-                      child: Text(
-                        'Select a data structure to visualize',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline1
-                            ?.copyWith(fontSize: 50),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Select a data structure to visualize',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline1
+                                ?.copyWith(fontSize: 50),
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            'By - Satvik Gupta',
+                            style: Theme.of(context).textTheme.headline5,
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -59,17 +53,14 @@ class HomeScreen extends StatelessWidget {
                 bottom: 0,
                 child: SizedBox(
                   height: 200,
+                  width: MediaQuery.of(context).size.width - 32,
                   child: ListView(
-                    shrinkWrap: true,
+                    //shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
                     children: dataStructuresList
                         .map(
                           (e) => DataStructureListTile(
-                            title: e.title,
-                            color: e.color,
-                            description: e.description,
-                            routeName: e.routeName,
-                            imagePath: e.imagePath,
+                            dataStructuresList.indexOf(e),
                           ),
                         )
                         .toList(),

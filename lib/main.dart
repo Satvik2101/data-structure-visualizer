@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:ds_visualizer/screens/array_screen.dart';
 import 'package:ds_visualizer/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -84,6 +85,9 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: HomeScreen(),
+      routes: {
+        ArrayScreen.routeName: (ctx) => const ArrayScreen(),
+      },
     );
   }
 }
