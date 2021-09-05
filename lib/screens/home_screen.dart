@@ -50,11 +50,12 @@ class HomeScreen extends StatelessWidget {
               ),
               Positioned(
                 bottom: 0,
-                child: SizedBox(
-                  height: 200,
+                child: Container(
+                  height: 250,
+                  constraints: BoxConstraints(maxHeight: 250, minHeight: 200),
                   width: MediaQuery.of(context).size.width - 32,
                   child: ListView(
-                    //shrinkWrap: true,
+                    shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
                     children: dataStructuresList
                         .map(

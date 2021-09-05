@@ -1,3 +1,4 @@
+import 'package:ds_visualizer/screens/array_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/screen_template.dart';
@@ -35,13 +36,13 @@ final List<DataStructure> dataStructuresList = [
 3. Store elements in a contiguous block of memory
 4. Once declared and initialized, the size of an array cannot be changed
       ''',
-    routeName: ScreenTemplate.routeName,
+    routeName: ArrayScreen.routeName,
   ),
   DataStructure(
     title: 'Vector',
     description:
         'Vectors are the C++ representation of a resizable array, that grows in size if it needs to. Dynamic memory allocation is used for this.',
-    routeName: ScreenTemplate.routeName,
+    routeName: ArrayScreen.routeName,
     colors: [
       Colors.deepOrange[800]!,
       Colors.orange[900]!,
@@ -54,7 +55,7 @@ final List<DataStructure> dataStructuresList = [
     title: 'Linked List',
     description:
         'It is a linear data structure whose order is not determined by the placement in memory, which can be non-linear as well. Instead each element contains a pointer to the next element.',
-    routeName: ScreenTemplate.routeName,
+    routeName: ArrayScreen.routeName,
     colors: [
       Colors.green[800]!,
       Colors.greenAccent[700]!,
@@ -68,7 +69,7 @@ final List<DataStructure> dataStructuresList = [
     title: 'Stack',
     description:
         'Stack is a linear data structure which follows a First In Last Out (FILO), or Last In First Out (LIFO) order of operations\nInsertion and extraction happens from the same end.',
-    routeName: ScreenTemplate.routeName,
+    routeName: ArrayScreen.routeName,
     colors: [
       Colors.red[800]!,
       Colors.red,
@@ -81,7 +82,7 @@ final List<DataStructure> dataStructuresList = [
     title: 'Queue',
     description:
         'Queue is a linear data structure which follows a First In First Out (FIFO).\nA queue is open at both ends, insertion happens at the rear of the queue and extraction happens from the front.',
-    routeName: ScreenTemplate.routeName,
+    routeName: ArrayScreen.routeName,
     colors: [
       Colors.purple[900]!,
       Colors.purple[800]!,

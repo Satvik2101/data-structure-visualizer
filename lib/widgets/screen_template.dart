@@ -3,8 +3,14 @@ import 'package:flutter/material.dart';
 import '../models/data_structure.dart';
 
 class ScreenTemplate extends StatefulWidget {
-  const ScreenTemplate({Key? key}) : super(key: key);
+  const ScreenTemplate({
+    Key? key,
+    required this.index,
+    required this.children,
+  }) : super(key: key);
   static const routeName = '/screen-template';
+  final int index;
+  final List<Widget> children;
   @override
   _ScreenTemplateState createState() => _ScreenTemplateState();
 }
@@ -12,7 +18,6 @@ class ScreenTemplate extends StatefulWidget {
 class _ScreenTemplateState extends State<ScreenTemplate>
     with SingleTickerProviderStateMixin {
   bool _isInit = true;
-  late final int index;
   late final String title;
   late final String description;
   late final String imagePath;
@@ -44,12 +49,12 @@ class _ScreenTemplateState extends State<ScreenTemplate>
   void didChangeDependencies() {
     if (_isInit) {
       _isInit = false;
-      index = ModalRoute.of(context)!.settings.arguments as int;
-      title = dataStructuresList[index].title;
-      description = dataStructuresList[index].description;
-      imagePath = dataStructuresList[index].imagePath;
-      colors = dataStructuresList[index].colors;
-      salientFeatures = dataStructuresList[index].salientFeatures;
+
+      title = dataStructuresList[widget.index].title;
+      description = dataStructuresList[widget.index].description;
+      imagePath = dataStructuresList[widget.index].imagePath;
+      colors = dataStructuresList[widget.index].colors;
+      salientFeatures = dataStructuresList[widget.index].salientFeatures;
     }
 
     super.didChangeDependencies();
@@ -86,42 +91,44 @@ class _ScreenTemplateState extends State<ScreenTemplate>
                 children: [
                   Expanded(
                     flex: 1,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          title,
-                          style:
-                              Theme.of(context).textTheme.headline1?.copyWith(
-                                    color: Colors.white,
-                                    fontSize: 80,
-                                  ),
-                        ),
-                        Text(
-                          description,
-                          style:
-                              Theme.of(context).textTheme.headline5?.copyWith(
-                                    color: Colors.white,
-                                  ),
-                        ),
-                        const SizedBox(height: 20),
-                        Text(
-                          'Salient Features: ',
-                          style:
-                              Theme.of(context).textTheme.headline2?.copyWith(
-                                    color: Colors.white,
-                                  ),
-                        ),
-                        const SizedBox(height: 20),
-                        Text(
-                          salientFeatures,
-                          style:
-                              Theme.of(context).textTheme.bodyText2?.copyWith(
-                                    color: Colors.white,
-                                  ),
-                        ),
-                      ],
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            title,
+                            style:
+                                Theme.of(context).textTheme.headline1?.copyWith(
+                                      color: Colors.white,
+                                      fontSize: 80,
+                                    ),
+                          ),
+                          Text(
+                            description,
+                            style:
+                                Theme.of(context).textTheme.headline5?.copyWith(
+                                      color: Colors.white,
+                                    ),
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            'Salient Features: ',
+                            style:
+                                Theme.of(context).textTheme.headline2?.copyWith(
+                                      color: Colors.white,
+                                    ),
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            salientFeatures,
+                            style:
+                                Theme.of(context).textTheme.bodyText2?.copyWith(
+                                      color: Colors.white,
+                                    ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   Expanded(
@@ -140,82 +147,28 @@ class _ScreenTemplateState extends State<ScreenTemplate>
           ListView(
             controller: _controller,
             children: [
-              Container(
-                height: MediaQuery.of(context).size.height,
+              Container(height: MediaQuery.of(context).size.height),
+            ]..addAll(
+                widget.children
+                    .map(
+                      (e) => Container(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 5,
+                          horizontal: 20,
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        child: e,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                            width: 0,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    )
+                    .toList(),
               ),
-              Container(
-                height: 50,
-                color: Colors.white,
-                width: MediaQuery.of(context).size.width,
-                child: const Text('test'),
-              ),
-              Container(
-                height: 50,
-                color: Colors.white,
-                width: MediaQuery.of(context).size.width,
-                child: const Text('test'),
-              ),
-              Container(
-                height: 50,
-                color: Colors.white,
-                width: MediaQuery.of(context).size.width,
-                child: const Text('test'),
-              ),
-              Container(
-                height: 50,
-                color: Colors.white,
-                width: MediaQuery.of(context).size.width,
-                child: const Text('test'),
-              ),
-              Container(
-                height: 50,
-                color: Colors.white,
-                width: MediaQuery.of(context).size.width,
-                child: const Text('test'),
-              ),
-              Container(
-                height: 50,
-                color: Colors.white,
-                width: MediaQuery.of(context).size.width,
-                child: const Text('test'),
-              ),
-              Container(
-                height: 50,
-                color: Colors.white,
-                width: MediaQuery.of(context).size.width,
-                child: const Text('test'),
-              ),
-              Container(
-                height: 50,
-                color: Colors.white,
-                width: MediaQuery.of(context).size.width,
-                child: const Text('test'),
-              ),
-              Container(
-                height: 50,
-                color: Colors.white,
-                width: MediaQuery.of(context).size.width,
-                child: const Text('test'),
-              ),
-              Container(
-                height: 50,
-                color: Colors.white,
-                width: MediaQuery.of(context).size.width,
-                child: const Text('test'),
-              ),
-              Container(
-                height: 50,
-                color: Colors.white,
-                width: MediaQuery.of(context).size.width,
-                child: const Text('test'),
-              ),
-              Container(
-                height: 50,
-                color: Colors.white,
-                width: MediaQuery.of(context).size.width,
-                child: const Text('test'),
-              ),
-            ],
           ),
         ],
       ),
