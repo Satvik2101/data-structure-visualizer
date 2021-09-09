@@ -1,7 +1,5 @@
-import 'package:ds_visualizer/screens/array_screen.dart';
+import '../screens/array_screen.dart';
 import 'package:flutter/material.dart';
-
-import '../widgets/screen_template.dart';
 
 class DataStructure {
   final String title;

@@ -1,11 +1,8 @@
 import 'dart:math';
 
-import 'package:ds_visualizer/screens/array_screen.dart';
+import 'screens/array_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import 'widgets/screen_template.dart';
-import 'screens/home_screen.dart';
 
 void main() {
   runApp(MyApp());

@@ -40,7 +40,7 @@ class _DataStructureListTileState extends State<DataStructureListTile>
       color = dataStructuresList[widget.index].colors[0];
       _controller = AnimationController(
         vsync: this,
-        duration: Duration(milliseconds: 50),
+        duration: const Duration(milliseconds: 50),
       );
     }
     super.didChangeDependencies();

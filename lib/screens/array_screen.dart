@@ -1,7 +1,6 @@
 import 'dart:math';
 
-import 'package:ds_visualizer/models/data_structure.dart';
-import 'package:flutter/services.dart';
+import '../models/data_structure.dart';
 
 import '../widgets/screen_template.dart';
 import 'package:flutter/material.dart';
@@ -21,11 +20,7 @@ class _ArrayScreenState extends State<ArrayScreen> {
     dataStructuresList[0].colors.last,
     dataStructuresList[0].colors.last,
   ];
-  List<TextEditingController> controllers = [
-    TextEditingController(text: '0'),
-    TextEditingController(text: '0'),
-  ];
-
+  int tempLength = 2;
   int _selectedArrayIndex = -1;
   bool _hasArrayGenerated = false;
   late int valueToBeSearched;
@@ -33,7 +28,8 @@ class _ArrayScreenState extends State<ArrayScreen> {
   Color get selectedColor => dataStructuresList[indexInDSList].colors[0];
   Color get normalColor => dataStructuresList[indexInDSList].colors.last;
 
-  Duration dur = const Duration(milliseconds: 200);
+  Duration dur = const Duration(milliseconds: 50);
+  Duration animationDur = const Duration(milliseconds: 200);
   String overlayTitle = '';
   String overlayText = '';
   Future<void> _swapIndicesValue(int i, int j) async {
@@ -51,6 +47,124 @@ class _ArrayScreenState extends State<ArrayScreen> {
     setState(() {
       currArrayColors[i] = normalColor;
       currArrayColors[j] = normalColor;
+    });
+  }
+
+  Future<void> _merge(int start, int end, int mid) async {
+    int i = 0;
+    int j = 0;
+    _selectedArrayIndex = mid;
+    int k = start;
+    int leftLength = mid - start + 1;
+    int rightLength = end - mid;
+    List<int> left = [
+      ...List.generate(leftLength, (x) => currArray[start + x])
+    ];
+    List<int> right = [
+      ...List.generate(rightLength, (x) => currArray[mid + 1 + x])
+    ];
+
+    while (i < left.length && j < right.length) {
+      setState(() {
+        currArrayColors[mid] = Colors.red;
+        currArrayColors[start] = Colors.grey;
+        currArrayColors[end] = Colors.grey;
+      });
+      await Future.delayed(dur);
+      if (left[i] <= right[j]) {
+        setState(() {
+          currArrayColors[k] = selectedColor;
+        });
+        await Future.delayed(dur);
+        setState(() {
+          currArray[k] = left[i];
+        });
+        await Future.delayed(dur);
+        setState(() {
+          currArrayColors[i] = normalColor;
+        });
+        i++;
+      } else {
+        setState(() {
+          currArrayColors[k] = selectedColor;
+        });
+        await Future.delayed(dur);
+        setState(() {
+          currArray[k] = right[j];
+        });
+        await Future.delayed(dur);
+        setState(() {
+          currArrayColors[j] = normalColor;
+        });
+        j++;
+      }
+      setState(() {
+        currArrayColors[i] = normalColor;
+        currArrayColors[j] = normalColor;
+        currArrayColors[k] = normalColor;
+      });
+      k++;
+    }
+    while (i < left.length) {
+      setState(() {
+        currArrayColors[k] = Colors.black;
+      });
+      await Future.delayed(dur);
+      setState(() {
+        currArray[k] = left[i];
+      });
+      await Future.delayed(dur);
+      setState(() {
+        currArrayColors[k] = normalColor;
+      });
+      i++;
+      k++;
+    }
+    while (j < right.length) {
+      setState(() {
+        currArrayColors[k] = Colors.black;
+      });
+      await Future.delayed(dur);
+      setState(() {
+        currArray[k] = right[j];
+      });
+      await Future.delayed(dur);
+      setState(() {
+        currArrayColors[k] = normalColor;
+      });
+      j++;
+      k++;
+    }
+    setState(() {
+      currArrayColors[start] = normalColor;
+      currArrayColors[end] = normalColor;
+      currArrayColors[mid] = normalColor;
+    });
+  }
+
+  Future<void> _mergeSort(int start, int end) async {
+    if (start >= end) return;
+    int mid = (start + end) ~/ 2;
+    setState(() {
+      overlayTitle = 'Current Mid';
+      overlayText = '$mid';
+    });
+
+    await _mergeSort(start, mid);
+    setState(() {
+      overlayTitle = 'Current Mid';
+      overlayText = '$mid';
+    });
+    await _mergeSort(mid + 1, end);
+    setState(() {
+      overlayTitle = 'Current Mid';
+      overlayText = '$mid';
+    });
+    await _merge(start, end, mid);
+    setState(() {
+      _selectedArrayIndex = -1;
+      overlayText = '';
+      overlayTitle = '';
     });
   }
 
@@ -170,9 +284,9 @@ class _ArrayScreenState extends State<ArrayScreen> {
   }
 
   void _updateArray() {
+    currLength = tempLength;
     List<int> newList = List.generate(currLength, (index) => 0);
-    List<Color> newColors = List.generate(
-        currLength, (index) => dataStructuresList[indexInDSList].colors.last);
+    List<Color> newColors = List.generate(currLength, (index) => normalColor);
     for (int i = 0; i < min(currArray.length, currLength); i++) {
       newList[i] = currArray[i];
       newColors[i] = currArrayColors[i];
@@ -181,34 +295,22 @@ class _ArrayScreenState extends State<ArrayScreen> {
       currArray = newList;
       currArrayColors = newColors;
     });
-    controllers = List.generate(currLength, (index) {
-      return TextEditingController(text: currArray[index].toString());
-    });
   }
 
   void _generateRandomArray() async {
+    _updateArray();
+    var random = Random();
+    List<int> indices = List.generate(currLength, (index) => index);
     setState(() {
       _hasArrayGenerated = true;
     });
-    await Future.delayed(dur);
+    await Future.delayed(animationDur);
     _screenTemplateKey.currentState?.scrollToBottom();
-    var random = Random();
-    List<int> indices = List.generate(currLength, (index) => index);
     indices.shuffle();
-    _updateArray();
     for (int i = 0; i < currLength; i++) {
       int newVal = random.nextInt(900);
       setState(() {
         currArray[indices[i]] = newVal;
-        _selectedArrayIndex = indices[i];
-        currArrayColors[indices[i]] =
-            dataStructuresList[indexInDSList].colors[0];
-      });
-      await Future.delayed(const Duration(milliseconds: 200));
-      setState(() {
-        _selectedArrayIndex = -1;
-        currArrayColors[indices[i]] =
-            dataStructuresList[indexInDSList].colors.last;
       });
     }
   }
@@ -218,7 +320,7 @@ class _ArrayScreenState extends State<ArrayScreen> {
       currLength,
       (index) {
         return SizedBox(
-          height: tileSize + (_hasArrayGenerated ? 380 : 80),
+          height: tileSize + (_hasArrayGenerated ? 420 : 80),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -227,15 +329,15 @@ class _ArrayScreenState extends State<ArrayScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(index.toString()),
+                    Text(tileSize > 30 ? index.toString() : ''),
                     AnimatedContainer(
                       height: (_selectedArrayIndex == index)
-                          ? tileSize + 25
+                          ? tileSize * 1.4
                           : tileSize,
                       width: (_selectedArrayIndex == index)
-                          ? tileSize + 25
+                          ? tileSize * 1.4
                           : tileSize,
-                      duration: const Duration(milliseconds: 200),
+                      duration: animationDur,
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: currArrayColors[index],
@@ -254,7 +356,7 @@ class _ArrayScreenState extends State<ArrayScreen> {
                         width: double.infinity,
                         child: Center(
                           child: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 200),
+                            duration: animationDur,
                             transitionBuilder: (child, animation) =>
                                 FadeTransition(
                               opacity: animation,
@@ -268,12 +370,22 @@ class _ArrayScreenState extends State<ArrayScreen> {
                                 child: child,
                               ),
                             ),
-                            child: Text(
-                              currArray[index].toString(),
-                              key: ValueKey(index.toString() +
-                                  currArray[index].toString()),
-                              style: const TextStyle(
-                                color: Colors.white,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Row(
+                                children: [
+                                  SizedBox(width: 0.1),
+                                  Text(
+                                    (tileSize > 30)
+                                        ? currArray[index].toString()
+                                        : '',
+                                    key: ValueKey(index.toString() +
+                                        currArray[index].toString()),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -284,9 +396,13 @@ class _ArrayScreenState extends State<ArrayScreen> {
                 ),
               ),
               AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
+                duration: animationDur,
                 width: tileSize * 0.7,
-                height: currArray[index] * 330 / 900,
+                height: max(
+                  0,
+                  currArray[index] * 380 / 900 -
+                      (_selectedArrayIndex == index ? tileSize * 0.4 : 0),
+                ),
                 color: currArrayColors[index],
               ),
             ],
@@ -355,20 +471,21 @@ class _ArrayScreenState extends State<ArrayScreen> {
             Expanded(
               child: Slider(
                 min: 2,
-                max: 20,
-                value: currLength.toDouble(),
+                max: 50,
+                value: tempLength.toDouble(),
                 onChanged: (value) {
                   setState(() {
-                    currLength = value.toInt();
+                    tempLength = value.toInt();
                   });
-                  _updateArray();
+
+                  print("set length");
                 },
-                divisions: 18,
-                label: '$currLength',
+                divisions: 48,
+                label: '$tempLength',
               ),
             ),
             Text(
-              '$currLength',
+              '$tempLength',
             ),
           ],
         ),
@@ -380,8 +497,9 @@ class _ArrayScreenState extends State<ArrayScreen> {
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  SizedBox(
+                  Container(
                     height: tileSize + (_hasArrayGenerated ? 380 : 80),
+                    alignment: Alignment.topCenter,
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
                       alignment: Alignment.centerLeft,
@@ -399,7 +517,7 @@ class _ArrayScreenState extends State<ArrayScreen> {
               flex: 2,
               child: Container(
                 padding: const EdgeInsets.all(10),
-                height: tileSize + (_hasArrayGenerated ? 380 : 80),
+                height: tileSize + (_hasArrayGenerated ? 420 : 80),
                 child: ListView(
                   controller: null,
                   children: [
@@ -423,6 +541,13 @@ class _ArrayScreenState extends State<ArrayScreen> {
                     ElevatedButton(
                       onPressed: () => _quickSort(0, currLength - 1),
                       child: const Text('Quick Sort'),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    ElevatedButton(
+                      onPressed: () => _mergeSort(0, currLength - 1),
+                      child: const Text('Merge Sort'),
                     ),
                   ],
                 ),
