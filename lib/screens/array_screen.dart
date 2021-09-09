@@ -37,7 +37,6 @@ class _ArrayScreenState extends State<ArrayScreen> {
   String overlayTitle = '';
   String overlayText = '';
   Future<void> _swapIndicesValue(int i, int j) async {
-    print("Swapping $i $j");
     setState(() {
       currArrayColors[i] = Colors.red;
       currArrayColors[j] = Colors.green;
@@ -57,24 +56,30 @@ class _ArrayScreenState extends State<ArrayScreen> {
 
   Future<int> _partition(int start, int end) async {
     int pivot = currArray[end];
-    print("End: $end");
     int i = start - 1;
-    for (int j = 0; j < end; j++) {
+    for (int j = start; j < end; j++) {
       if (currArray[j] < pivot) {
         i++;
         await _swapIndicesValue(i, j);
       }
     }
 
-    _swapIndicesValue(end, i + 1);
+    await _swapIndicesValue(end, i + 1);
     return i + 1;
   }
 
   Future<void> _quickSort(int start, int end) async {
+    setState(() {
+      overlayTitle = 'Current Pivot';
+    });
     if (start >= end) return;
     int pivot = await _partition(start, end);
+
     setState(() {
       _selectedArrayIndex = pivot;
+      setState(() {
+        overlayText = 'Index:$pivot, Value: ${currArray[pivot]}';
+      });
       currArrayColors[pivot] = selectedColor;
     });
     await _quickSort(start, pivot - 1);
@@ -82,6 +87,8 @@ class _ArrayScreenState extends State<ArrayScreen> {
     setState(() {
       _selectedArrayIndex = -1;
       currArrayColors[pivot] = normalColor;
+      overlayText = '';
+      overlayTitle = '';
     });
   }
 
@@ -190,7 +197,7 @@ class _ArrayScreenState extends State<ArrayScreen> {
     indices.shuffle();
     _updateArray();
     for (int i = 0; i < currLength; i++) {
-      int newVal = random.nextInt(20);
+      int newVal = random.nextInt(900);
       setState(() {
         currArray[indices[i]] = newVal;
         _selectedArrayIndex = indices[i];
@@ -306,7 +313,6 @@ class _ArrayScreenState extends State<ArrayScreen> {
             color: Colors.white,
             alignment: Alignment.center,
             height: 100,
-            width: 100,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
