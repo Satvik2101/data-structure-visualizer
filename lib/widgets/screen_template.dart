@@ -12,10 +12,10 @@ class ScreenTemplate extends StatefulWidget {
   final int index;
   final List<Widget> children;
   @override
-  _ScreenTemplateState createState() => _ScreenTemplateState();
+  ScreenTemplateState createState() => ScreenTemplateState();
 }
 
-class _ScreenTemplateState extends State<ScreenTemplate>
+class ScreenTemplateState extends State<ScreenTemplate>
     with SingleTickerProviderStateMixin {
   bool _isInit = true;
   late final String title;
@@ -58,6 +58,14 @@ class _ScreenTemplateState extends State<ScreenTemplate>
     }
 
     super.didChangeDependencies();
+  }
+
+  void scrollToBottom() {
+    _controller.animateTo(
+      _controller.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+    );
   }
 
   @override
