@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 
 import '../models/data_structure.dart';
 import '../widgets/screen_template.dart';
+import '../widgets/animating_height_bar.dart';
+import '../widgets/stack_overlay_widget.dart';
+import '../widgets/array_widget.dart';
 
 class ArrayScreen extends StatefulWidget {
   const ArrayScreen({Key? key}) : super(key: key);
@@ -24,7 +27,6 @@ class _ArrayScreenState extends State<ArrayScreen> {
   int tempLength = 2;
   int _selectedArrayIndex = -1;
   bool _hasArrayGenerated = false;
-  late int valueToBeSearched;
   GlobalKey<ScreenTemplateState> _screenTemplateKey = GlobalKey();
   Color get selectedColor => dataStructuresList[indexInDSList].colors[0];
   Color get normalColor => dataStructuresList[indexInDSList].colors.last;
@@ -33,6 +35,7 @@ class _ArrayScreenState extends State<ArrayScreen> {
   Duration animationDur = const Duration(milliseconds: 150);
   String overlayTitle = '';
   String overlayText = '';
+  int timeTaken = 0;
 
   Future<void> _callSort(Function fun) async {
     List<int> sortedArray =
@@ -50,8 +53,9 @@ class _ArrayScreenState extends State<ArrayScreen> {
     assert(listEquals(currArray, sortedArray));
     for (int i = 0; i < currLength; i++) {
       setState(() {
-        currArrayColors[i] = normalColor;
+        currArrayColors[i] = Colors.green;
       });
+      await Future.delayed(const Duration(milliseconds: 0));
     }
   }
 
@@ -67,6 +71,58 @@ class _ArrayScreenState extends State<ArrayScreen> {
     await Future.delayed(dur);
     currArrayColors[i] = normalColor;
     currArrayColors[j] = normalColor;
+  }
+
+  Future<void> _heapify(int i, int heapSize,
+      [bool setOverlayValues = false]) async {
+    int largest = i;
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
+    if (left < heapSize && currArray[left] > currArray[largest]) {
+      largest = left;
+    }
+    if (right < heapSize && currArray[right] > currArray[largest]) {
+      largest = right;
+    }
+    if (i != largest) {
+      if (setOverlayValues) {
+        setState(() {
+          overlayTitle = 'Building Max Heap:\nSwapping';
+          overlayText = '$i and $largest';
+        });
+      }
+      await _swapIndicesValue(i, largest);
+      await _heapify(largest, heapSize, setOverlayValues);
+    }
+  }
+
+  Future<void> _heapSort() async {
+    int heapSize = currLength;
+    //Build max heap
+    for (int i = heapSize ~/ 2 - 1; i >= 0; i--) {
+      await _heapify(i, heapSize, true);
+    }
+
+    setState(() {
+      overlayTitle = 'Elements in place';
+    });
+
+    for (int i = heapSize - 1; i > 0; i--) {
+      _selectedArrayIndex = i;
+
+      await _swapIndicesValue(i, 0);
+
+      setState(() {
+        currArrayColors[i] = Colors.black;
+        overlayText = '${heapSize - i}';
+      });
+      await _heapify(0, i);
+      currArrayColors[i] = selectedColor;
+    }
+    setState(() {
+      overlayText = '$currLength';
+    });
+    await Future.delayed(animationDur);
   }
 
   Future<void> _merge(int start, int end, int mid) async {
@@ -290,88 +346,9 @@ class _ArrayScreenState extends State<ArrayScreen> {
       int newVal = random.nextInt(900);
       setState(() {
         currArray[indices[i]] = newVal;
+        currArrayColors[indices[i]] = normalColor;
       });
     }
-  }
-
-  List<Widget> _buildArrayWidget() {
-    List<Widget> list = List.generate(
-      currLength,
-      (index) {
-        return SizedBox(
-          height: tileSize + (_hasArrayGenerated ? 420 : 80),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              if (tileSize > 30)
-                Container(
-                  alignment: Alignment.topCenter,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(tileSize > 30 ? index.toString() : ''),
-                      AnimatedContainer(
-                        height: (_selectedArrayIndex == index)
-                            ? tileSize * 1.4
-                            : tileSize,
-                        width: (_selectedArrayIndex == index)
-                            ? tileSize * 1.4
-                            : tileSize,
-                        duration: animationDur,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: currArrayColors[index],
-                            width: (_selectedArrayIndex == index) ? 2 : 1,
-                          ),
-                          borderRadius: BorderRadius.circular(tileSize * 0.1),
-                        ),
-                        padding: EdgeInsets.all(tileSize * 0.08),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: currArrayColors[index],
-                            borderRadius: BorderRadius.circular(tileSize * 0.1),
-                          ),
-                          height: double.infinity,
-                          width: double.infinity,
-                          child: Center(
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Row(
-                                children: [
-                                  const SizedBox(width: 0.1),
-                                  Text(
-                                    (tileSize > 30)
-                                        ? currArray[index].toString()
-                                        : '',
-                                    key: ValueKey(index.toString() +
-                                        currArray[index].toString()),
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              AnimatingHeightBar(
-                tileSize: tileSize,
-                color: currArrayColors[index],
-                selectedArrayIndex: _selectedArrayIndex,
-                index: index,
-                value: currArray[index],
-              ),
-            ],
-          ),
-        );
-      },
-    );
-
-    return list;
   }
 
   double get tileSize {
@@ -379,53 +356,12 @@ class _ArrayScreenState extends State<ArrayScreen> {
         (MediaQuery.of(context).size.width - 50) * 0.9 / currLength, 100);
   }
 
-  Widget currentValueWidget() => Positioned(
-        bottom: 10,
-        left: 10,
-        child: Material(
-          elevation: 5,
-          color: Colors.transparent,
-          child: Container(
-            color: Colors.white,
-            alignment: Alignment.center,
-            height: 100,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  FittedBox(
-                    child: Text(
-                      overlayTitle,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    '$overlayText',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
   @override
   Widget build(BuildContext context) {
     return ScreenTemplate(
       key: _screenTemplateKey,
       index: 0,
       children: [
-        const Text(
-          'Choose the number of elements in your array',
-        ),
-        Text(
-          'A maximum of 20 elements is allowed to make visualization better\nHere we take the default value of a new element as 0, but some compilers will not set any default value and a garbage value will be stored there.',
-          style: Theme.of(context).textTheme.subtitle1?.copyWith(
-                color: Colors.grey[700],
-              ),
-        ),
         Row(
           children: [
             Expanded(
@@ -456,18 +392,24 @@ class _ArrayScreenState extends State<ArrayScreen> {
                 clipBehavior: Clip.none,
                 children: [
                   Container(
-                    height: tileSize + (_hasArrayGenerated ? 380 : 80),
+                    height: tileSize + (_hasArrayGenerated ? 430 : 80),
                     alignment: Alignment.topCenter,
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
                       alignment: Alignment.centerLeft,
-                      child: Row(
-                        //scrollDirection: Axis.horizontal,
-                        children: _buildArrayWidget(),
-                      ),
+                      child: ArrayWidget(
+                          currLength: currLength,
+                          tileSize: tileSize,
+                          hasArrayGenerated: _hasArrayGenerated,
+                          selectedArrayIndex: _selectedArrayIndex,
+                          animationDur: animationDur,
+                          currArrayColors: currArrayColors,
+                          currArray: currArray),
                     ),
                   ),
-                  if (overlayText.isNotEmpty) currentValueWidget(),
+                  if (overlayText.isNotEmpty)
+                    StackOverlayWidget(
+                        overlayTitle: overlayTitle, overlayText: overlayText),
                 ],
               ),
             ),
@@ -477,7 +419,7 @@ class _ArrayScreenState extends State<ArrayScreen> {
                 padding: const EdgeInsets.all(10),
                 height: tileSize + (_hasArrayGenerated ? 420 : 80),
                 child: ListView(
-                  controller: null,
+                  controller: ScrollController(),
                   children: [
                     ElevatedButton(
                       child: const Text('Generate random array'),
@@ -507,6 +449,13 @@ class _ArrayScreenState extends State<ArrayScreen> {
                       onPressed: () => _callSort(_mergeSort),
                       child: const Text('Merge Sort'),
                     ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    ElevatedButton(
+                      onPressed: () => _callSort(_heapSort),
+                      child: const Text('Heap Sort'),
+                    ),
                   ],
                 ),
               ),
@@ -514,57 +463,6 @@ class _ArrayScreenState extends State<ArrayScreen> {
           ],
         ),
       ],
-    );
-  }
-}
-
-class AnimatingHeightBar extends StatefulWidget {
-  const AnimatingHeightBar({
-    Key? key,
-    required this.selectedArrayIndex,
-    required this.tileSize,
-    required this.value,
-    required this.index,
-    required this.color,
-  }) : super(key: key);
-
-  final double tileSize;
-  final int value;
-  final int index;
-  final int selectedArrayIndex;
-  final Color color;
-
-  @override
-  _AnimatingHeightBarState createState() => _AnimatingHeightBarState();
-}
-
-class _AnimatingHeightBarState extends State<AnimatingHeightBar>
-    with SingleTickerProviderStateMixin {
-  @override
-  Widget build(BuildContext context) {
-    double height = max(0, widget.value * 380 / 900);
-    return AnimatedContainer(
-      // vsync: this,
-      alignment: Alignment.topCenter,
-      width: widget.tileSize *
-          (widget.selectedArrayIndex == widget.index ? 1.2 : 0.93),
-      height: height,
-      duration: const Duration(milliseconds: 100),
-      child: Container(
-        margin: widget.selectedArrayIndex == widget.index
-            ? const EdgeInsets.all(1.5)
-            : const EdgeInsets.all(0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(height * 0.01),
-            bottomRight: Radius.circular(height * 0.01),
-          ),
-          color: widget.color,
-        ),
-        // width: widget.tileSize *
-        //     (widget.selectedArrayIndex == widget.index ? 1.2 : 0.93),
-        // height: height,
-      ),
     );
   }
 }

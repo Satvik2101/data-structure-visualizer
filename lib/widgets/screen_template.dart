@@ -100,6 +100,7 @@ class ScreenTemplateState extends State<ScreenTemplate>
                   Expanded(
                     flex: 1,
                     child: SingleChildScrollView(
+                      controller: null,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
@@ -152,31 +153,35 @@ class ScreenTemplateState extends State<ScreenTemplate>
               ),
             ),
           ),
-          ListView(
+          Scrollbar(
             controller: _controller,
-            children: [
-              Container(height: MediaQuery.of(context).size.height),
-            ]..addAll(
-                widget.children
-                    .map(
-                      (e) => Container(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 5,
-                          horizontal: 20,
-                        ),
-                        width: MediaQuery.of(context).size.width,
-                        child: e,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(
-                            width: 0,
+            isAlwaysShown: true,
+            child: ListView(
+              controller: _controller,
+              children: [
+                Container(height: MediaQuery.of(context).size.height),
+              ]..addAll(
+                  widget.children
+                      .map(
+                        (e) => Container(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 5,
+                            horizontal: 20,
+                          ),
+                          width: MediaQuery.of(context).size.width,
+                          child: e,
+                          decoration: BoxDecoration(
                             color: Colors.white,
+                            border: Border.all(
+                              width: 0,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
-                      ),
-                    )
-                    .toList(),
-              ),
+                      )
+                      .toList(),
+                ),
+            ),
           ),
         ],
       ),
